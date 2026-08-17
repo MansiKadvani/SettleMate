@@ -1,0 +1,1573 @@
+﻿@model SettleMate.Models.Student.RegisterModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>SettleMate - Registration</title>
+
+
+    <!-- =====================================================
+         FONTS
+         ===================================================== -->
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Nunito:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+
+    <!-- =====================================================
+         TAILWIND
+         ===================================================== -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+    <!-- =====================================================
+         LUCIDE ICONS
+         ===================================================== -->
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+
+    <!-- =====================================================
+         GLOBAL CSS
+         ===================================================== -->
+
+    <link rel="stylesheet"
+          href="~/css/site.css" />
+
+
+    <!-- =====================================================
+         REGISTRATION CSS
+         ===================================================== -->
+
+    <link rel="stylesheet"
+          href="~/css/student/register.css" />
+
+</head>
+
+
+<body class="min-h-screen flex items-center justify-center md:p-2">
+
+
+    <!-- =====================================================
+         REGISTRATION CONTAINER
+         ===================================================== -->
+
+    <div class="registration-card flex flex-col md:flex-row w-full max-w-[1100px] overflow-hidden min-h-[700px]">
+
+
+        <!-- =================================================
+             LEFT SIDE
+             ================================================= -->
+
+        <div class="w-full md:w-[50%] md:p-5 p-8 flex flex-col justify-between">
+
+
+            <div>
+
+
+                <!-- =========================================
+                     LOGO + DESCRIPTION
+                     ========================================= -->
+
+                <div class="flex flex-col items-center mb-8">
+
+                    <img src="~/images/Student/logo.png"
+                         alt="SettleMate Logo"
+                         class="h-34 w-32 object-contain">
+
+                    <h3 class="text-sm font-semibold text-[#526777]">
+
+                        Find your perfect space, effortlessly.
+
+                    </h3>
+
+                </div>
+
+
+
+                <!-- =========================================
+                     PROGRESS BAR
+                     ========================================= -->
+
+                <div class="registration-step-track relative flex justify-between items-center max-w-[300px] mx-auto mb-12">
+
+
+                    <!-- STEP 1 -->
+
+                    <div class="relative z-10 flex flex-col items-center">
+
+                        <div id="pill-1"
+                             class="step-pill active">
+
+                            1
+
+                        </div>
+
+                        <span class="text-[10px] font-medium text-[#0D9488] mt-1">
+
+                            Account
+
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- STEP 2 -->
+
+                    <div class="relative z-10 flex flex-col items-center">
+
+                        <div id="pill-2"
+                             class="step-pill">
+
+                            2
+
+                        </div>
+
+                        <span class="text-[10px] font-medium text-[#0D9488] mt-1">
+
+                            Security
+
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- STEP 3 -->
+
+                    <div class="relative z-10 flex flex-col items-center">
+
+                        <div id="pill-3"
+                             class="step-pill">
+
+                            3
+
+                        </div>
+
+                        <span class="text-[10px] font-medium text-[#0D9488] mt-1">
+
+                            Location
+
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- STEP 4 -->
+
+                    <div class="relative z-10 flex flex-col items-center">
+
+                        <div id="pill-4"
+                             class="step-pill">
+
+                            4
+
+                        </div>
+
+                        <span class="text-[10px] font-medium text-[#0D9488] mt-1">
+
+                            Profile
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =========================================
+                     FORM
+                     ========================================= -->
+
+                <form id="regForm"
+                      asp-controller="Register"
+                      asp-action="Register"
+                      method="post">
+
+
+                    <!-- =====================================
+                         VALIDATION SUMMARY
+                         ===================================== -->
+
+                    <div asp-validation-summary="ModelOnly"
+                         class="text-red-600 text-sm mb-4">
+                    </div>
+
+
+
+                    <!-- =====================================
+                         STEP 1 - ACCOUNT
+                         ===================================== -->
+
+                    <div id="step-1"
+                         class="step-content active">
+
+
+                        <h2 class="text-xl font-bold mx-auto border-b-2 border-[#123B66] w-fit pb-1 mb-8">
+
+                            Account Setup
+
+                        </h2>
+
+
+
+                        <div class="space-y-4">
+
+
+                            <!-- FULL NAME -->
+
+                            <div>
+
+                                <label asp-for="Name"
+                                       class="registration-label">
+
+                                    Full Name
+
+                                </label>
+
+
+                                <input asp-for="Name"
+                                       type="text"
+                                       placeholder="John Doe"
+                                       class="registration-input">
+
+
+                                <span asp-validation-for="Name"
+                                      class="text-red-600 text-xs">
+                                </span>
+
+                            </div>
+
+
+
+                            <!-- GENDER -->
+
+                            <div>
+
+                                <label class="registration-label mb-2">
+
+                                    Gender Preference
+
+                                </label>
+
+
+                                <!-- Hidden value sent to backend -->
+
+                                <input asp-for="Gender"
+                                       type="hidden"
+                                       id="Gender"
+                                       value="Other">
+
+
+                                <div class="flex gap-3">
+
+
+                                    <div class="gender-pill text-sm"
+                                         onclick="selectGender(this)">
+
+                                        Male
+
+                                    </div>
+
+
+                                    <div class="gender-pill text-sm"
+                                         onclick="selectGender(this)">
+
+                                        Female
+
+                                    </div>
+
+
+                                    <div class="gender-pill selected text-sm"
+                                         onclick="selectGender(this)">
+
+                                        Other
+
+                                    </div>
+
+                                </div>
+
+
+                                <span asp-validation-for="Gender"
+                                      class="text-red-600 text-xs">
+                                </span>
+
+                            </div>
+
+
+
+                            <!-- MOBILE -->
+
+                            <div>
+
+                                <label asp-for="Phone"
+                                       class="registration-label">
+
+                                    Mobile Number
+
+                                </label>
+
+
+                                <div class="relative">
+
+
+                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[#526777]">
+
+                                        <i data-lucide="phone"
+                                           class="w-4 h-4">
+                                        </i>
+
+                                    </span>
+
+
+                                    <input asp-for="Phone"
+                                           type="tel"
+                                           placeholder="9876543210"
+                                           class="registration-input pl-10">
+
+                                </div>
+
+
+                                <span asp-validation-for="Phone"
+                                      class="text-red-600 text-xs">
+                                </span>
+
+                            </div>
+
+
+
+                            <!-- EMAIL -->
+
+                            <div>
+
+                                <label asp-for="Email"
+                                       class="registration-label">
+
+                                    Email Address
+
+                                </label>
+
+
+                                <div class="flex gap-2">
+
+
+                                    <div class="relative flex-1">
+
+
+                                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[#526777]">
+
+                                            <i data-lucide="mail"
+                                               class="w-4 h-4">
+                                            </i>
+
+                                        </span>
+
+
+                                        <input asp-for="Email"
+                                               type="email"
+                                               placeholder="john@example.com"
+                                               class="registration-input pl-10">
+
+                                    </div>
+
+
+                                    <button type="button"
+                                            onclick="openModal()"
+                                            class="registration-verify-btn px-4 py-2 text-sm font-medium">
+
+                                        Verify
+
+                                    </button>
+
+                                </div>
+
+
+                                <span asp-validation-for="Email"
+                                      class="text-red-600 text-xs">
+                                </span>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =====================================
+                         STEP 2 - SECURITY
+                         ===================================== -->
+
+                    <div id="step-2"
+                         class="step-content">
+
+
+                        <h2 class="text-xl font-bold mx-auto border-b-2 border-[#123B66] w-fit pb-1 mb-6">
+
+                            Security
+
+                        </h2>
+
+
+
+                        <div class="space-y-4">
+
+
+                            <!-- PASSWORD -->
+
+                            <div>
+
+                                <label asp-for="Password"
+                                       class="registration-label">
+
+                                    Create Password
+
+                                </label>
+
+
+                                <div class="relative">
+
+
+                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[#526777]">
+
+                                        <i data-lucide="lock"
+                                           class="w-4 h-4">
+                                        </i>
+
+                                    </span>
+
+
+                                    <input asp-for="Password"
+                                           type="password"
+                                           id="Password"
+                                           placeholder="••••••••"
+                                           class="registration-input px-10">
+
+
+                                    <button type="button"
+                                            onclick="togglePassword('Password', this)"
+                                            class="absolute right-4 top-1/2 -translate-y-1/2 text-[#526777]">
+
+                                        <i data-lucide="eye-off"
+                                           class="w-4 h-4">
+                                        </i>
+
+                                    </button>
+
+                                </div>
+
+
+                                <p class="password-helper mt-1 ml-1">
+
+                                    Must be at least 8 characters long.
+
+                                </p>
+
+
+                                <span asp-validation-for="Password"
+                                      class="text-red-600 text-xs">
+                                </span>
+
+                            </div>
+
+
+
+                            <!-- CONFIRM PASSWORD -->
+
+                            <div>
+
+                                <label asp-for="ConfirmPassword"
+                                       class="registration-label">
+
+                                    Confirm Password
+
+                                </label>
+
+
+                                <div class="relative">
+
+
+                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[#526777]">
+
+                                        <i data-lucide="refresh-cw"
+                                           class="w-4 h-4">
+                                        </i>
+
+                                    </span>
+
+
+                                    <input asp-for="ConfirmPassword"
+                                           type="password"
+                                           id="ConfirmPassword"
+                                           placeholder="••••••••"
+                                           class="registration-input px-10">
+
+
+                                    <button type="button"
+                                            onclick="togglePassword('ConfirmPassword', this)"
+                                            class="absolute right-4 top-1/2 -translate-y-1/2 text-[#526777]">
+
+                                        <i data-lucide="eye-off"
+                                           class="w-4 h-4">
+                                        </i>
+
+                                    </button>
+
+                                </div>
+
+
+                                <span asp-validation-for="ConfirmPassword"
+                                      class="text-red-600 text-xs">
+                                </span>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =====================================
+                         STEP 3 - LOCATION
+                         ===================================== -->
+
+                    <div id="step-3"
+                         class="step-content">
+
+
+                        <h2 class="text-xl font-bold mx-auto border-b-2 border-[#123B66] w-fit pb-1 mb-6">
+
+                            Location Details
+
+                        </h2>
+
+
+
+                        <div class="space-y-6">
+
+
+                            <!-- CITY -->
+
+                            <div>
+
+                                <label asp-for="City"
+                                       class="registration-label">
+
+                                    City
+
+                                </label>
+
+
+                                <select asp-for="City"
+                                        class="registration-input appearance-none">
+
+
+                                    <option value="">
+
+                                        Select your city
+
+                                    </option>
+
+
+                                    <option value="Rajkot">
+
+                                        Rajkot
+
+                                    </option>
+
+
+                                    <option value="Ahmedabad">
+
+                                        Ahmedabad
+
+                                    </option>
+
+
+                                </select>
+
+
+                                <span asp-validation-for="City"
+                                      class="text-red-600 text-xs">
+                                </span>
+
+                            </div>
+
+
+
+                            <!-- PREFERRED LOCATION -->
+
+                            <div>
+
+                                <label class="registration-label">
+
+                                    Preferred Location
+
+                                </label>
+
+
+                                <div class="relative">
+
+
+                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[#526777]">
+
+                                        <i data-lucide="map-pin"
+                                           class="w-4 h-4">
+                                        </i>
+
+                                    </span>
+
+
+                                    <!--
+                                         For now Preferred Location
+                                         is stored in Address.
+                                    -->
+
+                                    <input asp-for="Address"
+                                           type="text"
+                                           placeholder="Neighborhood, area or address"
+                                           class="registration-input pl-10">
+
+                                </div>
+
+
+                                <span asp-validation-for="Address"
+                                      class="text-red-600 text-xs">
+                                </span>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =====================================
+                         STEP 4 - AVATAR
+                         ===================================== -->
+
+                    <div id="step-4"
+                         class="step-content">
+
+
+                        <h2 class="text-xl font-bold mx-auto border-b-2 border-[#123B66] w-fit pb-1 mb-6">
+
+                            Choose Your Avatar
+
+                        </h2>
+
+
+                        <!--
+                             Hidden field.
+                             This value will be stored in ProfilePhoto.
+                        -->
+
+                        <input asp-for="ProfilePhoto"
+                               type="hidden"
+                               id="ProfilePhoto"
+                               value="/images/Student/female_01.png">
+
+
+
+                        <!-- FEMALE AVATARS -->
+
+                        <div class="flex justify-between items-center px-2 mb-8">
+
+
+                            <div class="avatar-circle selected"
+                                 onclick="selectAvatar(this)">
+
+                                <img src="~/images/Student/female_01.png"
+                                     alt="Female Avatar 1">
+
+                            </div>
+
+
+                            <div class="avatar-circle"
+                                 onclick="selectAvatar(this)">
+
+                                <img src="~/images/Student/female_02.png"
+                                     alt="Female Avatar 2">
+
+                            </div>
+
+
+                            <div class="avatar-circle"
+                                 onclick="selectAvatar(this)">
+
+                                <img src="~/images/Student/female_03.png"
+                                     alt="Female Avatar 3">
+
+                            </div>
+
+
+                            <div class="avatar-circle"
+                                 onclick="selectAvatar(this)">
+
+                                <img src="~/images/Student/female_04.png"
+                                     alt="Female Avatar 4">
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- MALE AVATARS -->
+
+                        <div class="flex justify-between items-center px-2 mb-8">
+
+
+                            <div class="avatar-circle"
+                                 onclick="selectAvatar(this)">
+
+                                <img src="~/images/Student/male_01.png"
+                                     alt="Male Avatar 1">
+
+                            </div>
+
+
+                            <div class="avatar-circle"
+                                 onclick="selectAvatar(this)">
+
+                                <img src="~/images/Student/male_02.png"
+                                     alt="Male Avatar 2">
+
+                            </div>
+
+
+                            <div class="avatar-circle"
+                                 onclick="selectAvatar(this)">
+
+                                <img src="~/images/Student/male_03.png"
+                                     alt="Male Avatar 3">
+
+                            </div>
+
+
+                            <div class="avatar-circle"
+                                 onclick="selectAvatar(this)">
+
+                                <img src="~/images/Student/male_04.png"
+                                     alt="Male Avatar 4">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                </form>
+
+            </div>
+
+
+
+            <!-- =============================================
+                 FOOTER BUTTONS
+                 ============================================= -->
+
+            <div class="flex gap-4 mt-12">
+
+
+                <!-- BACK -->
+
+                <button type="button"
+                        id="backBtn"
+                        onclick="prevStep()"
+                        class="hidden flex-1 registration-back-btn py-3 font-semibold">
+
+                    Back
+
+                </button>
+
+
+
+                <!-- NEXT -->
+
+                <button type="button"
+                        id="nextBtn"
+                        onclick="nextStep()"
+                        class="flex-[2] registration-primary-btn py-3 font-semibold flex items-center justify-center gap-2">
+
+
+                    <span id="nextText">
+
+                        Continue
+
+                    </span>
+
+
+                    <i data-lucide="arrow-right"
+                       class="w-4 h-4"
+                       id="nextIcon">
+                    </i>
+
+
+                </button>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             RIGHT SIDE - ILLUSTRATION
+             ================================================= -->
+
+        <div class="hidden md:flex md:w-[50%] bg-[#F1F5F9] relative items-center justify-center">
+
+
+            <img src="~/images/illustration.png"
+                 alt="SettleMate Illustration"
+                 class="w-full h-full object-cover z-10">
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =====================================================
+         EMAIL VERIFICATION MODAL
+         ===================================================== -->
+
+    <div id="verifyModal"
+         class="verify-modal hidden">
+
+
+        <div class="verify-modal-card">
+
+
+            <!-- CLOSE -->
+
+            <button type="button"
+                    onclick="closeModal()"
+                    class="absolute right-6 top-6 text-[#526777] hover:text-[#102A43]">
+
+                <i data-lucide="x"
+                   class="w-5 h-5">
+                </i>
+
+            </button>
+
+
+
+            <!-- EMAIL ICON -->
+
+            <div class="w-16 h-16 bg-[#CCFBF1] rounded-full flex items-center justify-center mx-auto mb-6">
+
+                <i data-lucide="mail"
+                   class="w-8 h-8 text-[#0D9488]">
+                </i>
+
+            </div>
+
+
+
+            <h2 class="text-xl font-bold mb-2">
+
+                Verify Email
+
+            </h2>
+
+
+
+            <p class="text-sm text-[#526777] mb-8">
+
+                We sent a 6-digit code to
+
+                <span class="font-medium text-[#102A43]"
+                      id="verifyEmailText">
+
+                    your email
+
+                </span>
+
+            </p>
+
+
+
+            <!-- OTP -->
+
+            <div class="flex justify-between gap-2 mb-6">
+
+
+                <input type="text"
+                       maxlength="1"
+                       class="otp-input">
+
+
+                <input type="text"
+                       maxlength="1"
+                       class="otp-input">
+
+
+                <input type="text"
+                       maxlength="1"
+                       class="otp-input">
+
+
+                <input type="text"
+                       maxlength="1"
+                       class="otp-input">
+
+
+                <input type="text"
+                       maxlength="1"
+                       class="otp-input">
+
+
+                <input type="text"
+                       maxlength="1"
+                       class="otp-input">
+
+
+            </div>
+
+
+
+            <p class="text-xs text-[#526777] mb-2">
+
+                01:59 remaining
+
+            </p>
+
+
+
+            <button type="button"
+                    class="text-sm font-semibold text-[#0D9488] mb-8 hover:underline">
+
+                Resend Code
+
+            </button>
+
+
+
+            <button type="button"
+                    onclick="closeModal()"
+                    class="w-full registration-primary-btn py-4 font-semibold">
+
+                Verify Account
+
+            </button>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         JQUERY
+         ===================================================== -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+
+
+    <!-- =====================================================
+         JQUERY VALIDATION
+         ===================================================== -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+
+
+
+    <!-- =====================================================
+         UNOBTRUSIVE VALIDATION
+         ===================================================== -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+
+    <script>
+
+
+        /* =================================================
+           INITIALIZATION
+           ================================================= */
+
+        try {
+
+            lucide.createIcons();
+
+        }
+        catch (error) {
+
+            console.log(error);
+
+        }
+
+
+
+        let currentStep = 1;
+
+
+
+        /* =================================================
+           UPDATE UI
+           ================================================= */
+
+        function updateUI() {
+
+            try {
+
+                /*
+                 * Hide all steps
+                 */
+
+                document
+                    .querySelectorAll('.step-content')
+                    .forEach(step => {
+
+                        step.classList.remove('active');
+
+                    });
+
+
+
+                /*
+                 * Show current step
+                 */
+
+                document
+                    .getElementById(`step-${currentStep}`)
+                    .classList.add('active');
+
+
+
+                /*
+                 * Update progress pills
+                 */
+
+                document
+                    .querySelectorAll('.step-pill')
+                    .forEach((pill, index) => {
+
+
+                        const stepIndex = index + 1;
+
+
+
+                        /*
+                         * Completed
+                         */
+
+                        if (stepIndex < currentStep) {
+
+                            pill.classList.add('completed');
+
+                            pill.classList.remove('active');
+
+                            pill.innerHTML =
+                                '<i data-lucide="check" class="w-4 h-4"></i>';
+
+                        }
+
+
+
+                        /*
+                         * Current
+                         */
+
+                        else if (stepIndex === currentStep) {
+
+                            pill.classList.add('active');
+
+                            pill.classList.remove('completed');
+
+                            pill.innerHTML = stepIndex;
+
+                        }
+
+
+
+                        /*
+                         * Future
+                         */
+
+                        else {
+
+                            pill.classList.remove('active');
+
+                            pill.classList.remove('completed');
+
+                            pill.innerHTML = stepIndex;
+
+                        }
+
+                    });
+
+
+
+                /*
+                 * Recreate icons
+                 */
+
+                lucide.createIcons();
+
+
+
+                /*
+                 * Back button
+                 */
+
+                document
+                    .getElementById('backBtn')
+                    .classList
+                    .toggle(
+                        'hidden',
+                        currentStep === 1
+                    );
+
+
+
+                /*
+                 * Next button text
+                 */
+
+                const nextText =
+                    document.getElementById('nextText');
+
+
+
+                const nextIcon =
+                    document.getElementById('nextIcon');
+
+
+
+                if (currentStep === 4) {
+
+                    nextText.textContent =
+                        "Complete Registration";
+
+                    nextIcon.setAttribute(
+                        'data-lucide',
+                        'check-circle'
+                    );
+
+                }
+
+                else {
+
+                    nextText.textContent =
+                        "Continue";
+
+                    nextIcon.setAttribute(
+                        'data-lucide',
+                        'arrow-right'
+                    );
+
+                }
+
+
+
+                lucide.createIcons();
+
+            }
+            catch (error) {
+
+                console.log(error);
+
+            }
+
+        }
+
+
+
+        /* =================================================
+           NEXT STEP
+           ================================================= */
+
+        function nextStep() {
+
+            try {
+
+
+                /*
+                 * If steps are not finished
+                 */
+
+                if (currentStep < 4) {
+
+                    currentStep++;
+
+                    updateUI();
+
+                }
+
+
+                /*
+                 * Final step
+                 */
+
+                else {
+
+                    /*
+                     * requestSubmit() triggers
+                     * frontend validation.
+                     */
+
+                    document
+                        .getElementById('regForm')
+                        .requestSubmit();
+
+                }
+
+            }
+            catch (error) {
+
+                console.log(error);
+
+            }
+
+        }
+
+
+
+        /* =================================================
+           PREVIOUS STEP
+           ================================================= */
+
+        function prevStep() {
+
+            try {
+
+                if (currentStep > 1) {
+
+                    currentStep--;
+
+                    updateUI();
+
+                }
+
+            }
+            catch (error) {
+
+                console.log(error);
+
+            }
+
+        }
+
+
+
+        /* =================================================
+           GENDER
+           ================================================= */
+
+        function selectGender(element) {
+
+            try {
+
+
+                /*
+                 * Remove selected from all
+                 */
+
+                document
+                    .querySelectorAll('.gender-pill')
+                    .forEach(pill => {
+
+                        pill.classList.remove('selected');
+
+                    });
+
+
+
+                /*
+                 * Select clicked gender
+                 */
+
+                element.classList.add('selected');
+
+
+
+                /*
+                 * Get gender text
+                 */
+
+                const gender =
+                    element.textContent.trim();
+
+
+
+                /*
+                 * Store value in hidden input
+                 */
+
+                document
+                    .getElementById('Gender')
+                    .value = gender;
+
+            }
+            catch (error) {
+
+                console.log(error);
+
+            }
+
+        }
+
+
+
+        /* =================================================
+           AVATAR
+           ================================================= */
+
+        function selectAvatar(element) {
+
+            try {
+
+
+                /*
+                 * Remove selected class
+                 */
+
+                document
+                    .querySelectorAll('.avatar-circle')
+                    .forEach(avatar => {
+
+                        avatar.classList.remove('selected');
+
+                    });
+
+
+
+                /*
+                 * Select avatar
+                 */
+
+                element.classList.add('selected');
+
+
+
+                /*
+                 * Get image
+                 */
+
+                const image =
+                    element.querySelector('img');
+
+
+
+                /*
+                 * Store image path
+                 */
+
+                if (image) {
+
+                    document
+                        .getElementById('ProfilePhoto')
+                        .value =
+                        image.getAttribute('src');
+
+                }
+
+            }
+            catch (error) {
+
+                console.log(error);
+
+            }
+
+        }
+
+
+
+        /* =================================================
+           PASSWORD SHOW / HIDE
+           ================================================= */
+
+        function togglePassword(inputId, button) {
+
+            try {
+
+                const input =
+                    document.getElementById(inputId);
+
+
+
+                if (input.type === "password") {
+
+                    input.type = "text";
+
+                }
+                else {
+
+                    input.type = "password";
+
+                }
+
+
+
+                /*
+                 * Refresh icon
+                 */
+
+                lucide.createIcons();
+
+            }
+            catch (error) {
+
+                console.log(error);
+
+            }
+
+        }
+
+
+
+        /* =================================================
+           OPEN EMAIL MODAL
+           ================================================= */
+
+        function openModal() {
+
+            try {
+
+                const email =
+                    document.getElementById('Email').value;
+
+
+
+                /*
+                 * Show entered email
+                 */
+
+                if (email !== "") {
+
+                    document
+                        .getElementById('verifyEmailText')
+                        .textContent = email;
+
+                }
+                else {
+
+                    document
+                        .getElementById('verifyEmailText')
+                        .textContent =
+                        "your email";
+
+                }
+
+
+
+                /*
+                 * Open modal
+                 */
+
+                const modal =
+                    document.getElementById('verifyModal');
+
+
+
+                modal.classList.remove('hidden');
+
+                modal.classList.add('show');
+
+
+
+                lucide.createIcons();
+
+            }
+            catch (error) {
+
+                console.log(error);
+
+            }
+
+        }
+
+
+
+        /* =================================================
+           CLOSE EMAIL MODAL
+           ================================================= */
+
+        function closeModal() {
+
+            try {
+
+                const modal =
+                    document.getElementById('verifyModal');
+
+
+
+                modal.classList.remove('show');
+
+                modal.classList.add('hidden');
+
+            }
+            catch (error) {
+
+                console.log(error);
+
+            }
+
+        }
+
+
+
+        /* =================================================
+           INITIAL UI
+           ================================================= */
+
+        try {
+
+            updateUI();
+
+        }
+        catch (error) {
+
+            console.log(error);
+
+        }
+
+
+    </script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,317 @@
+﻿/* =========================================================
+   SETTLEMATE — STUDENT REGISTRATION PAGE
+   ========================================================= */
+
+
+/* =========================================================
+   01. REGISTRATION CARD
+   ========================================================= */
+
+.registration-card {
+    background-color: var(--color-surface);
+    border-radius: 20px;
+    box-shadow: 0 1px 3px rgba(16, 42, 67, 0.08);
+}
+
+
+/* =========================================================
+   02. FORM INPUTS
+   ========================================================= */
+
+.registration-input {
+    width: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: 32px;
+    padding: 12px 16px;
+    background-color: var(--color-surface);
+    color: var(--color-text-primary);
+    font-family: var(--font-main);
+    font-size: 15px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+    .registration-input::placeholder {
+        color: var(--color-text-disabled);
+    }
+
+    .registration-input:focus {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 2px rgba(18, 59, 102, 0.10);
+    }
+
+
+/* =========================================================
+   03. FORM LABEL
+   ========================================================= */
+
+.registration-label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--color-text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   04. PRIMARY BUTTON
+   ========================================================= */
+
+.registration-primary-btn {
+    background-color: var(--color-primary);
+    color: var(--color-text-white);
+    border: 1px solid var(--color-primary);
+    border-radius: 10px;
+    transition: background-color 0.2s ease;
+}
+
+    .registration-primary-btn:hover {
+        background-color: var(--color-primary-hover);
+    }
+
+
+/* =========================================================
+   05. BACK BUTTON
+   ========================================================= */
+
+.registration-back-btn {
+    background-color: var(--color-surface);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+}
+
+    .registration-back-btn:hover {
+        background-color: var(--color-background);
+    }
+
+
+/* =========================================================
+   06. VERIFY BUTTON
+   ========================================================= */
+
+.registration-verify-btn {
+    background-color: var(--color-secondary-light);
+    color: var(--color-secondary);
+    border-radius: 999px;
+    transition: all 0.2s ease;
+}
+
+    .registration-verify-btn:hover {
+        background-color: #BBF7ED;
+    }
+
+
+/* =========================================================
+   07. GENDER PILLS
+   ========================================================= */
+
+.gender-pill {
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 10px 32px;
+    color: var(--color-text-primary);
+    background-color: var(--color-surface);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+    .gender-pill:hover {
+        border-color: var(--color-secondary);
+    }
+
+    .gender-pill.selected {
+        background-color: var(--color-secondary-light);
+        border-color: #99F6E4;
+        color: var(--color-secondary);
+    }
+
+
+/* =========================================================
+   08. AVATAR
+   ========================================================= */
+
+.avatar-circle {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+    .avatar-circle:hover {
+        transform: scale(1.1);
+    }
+
+    .avatar-circle.selected {
+        outline: 3px solid var(--color-primary);
+        outline-offset: 4px;
+    }
+
+    .avatar-circle img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+
+/* =========================================================
+   09. STEP PROGRESS
+   ========================================================= */
+
+.registration-step-track {
+    position: relative;
+}
+
+    .registration-step-track::before {
+        content: "";
+        position: absolute;
+        height: 2px;
+        background-color: #E5E7EB;
+        width: 100%;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+        z-index: 0;
+    }
+
+.step-pill {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid #D9E2E8;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9CA3AF;
+    font-size: 14px;
+    font-weight: 600;
+    position: relative;
+    z-index: 1;
+}
+
+    .step-pill.active,
+    .step-pill.completed {
+        background-color: var(--color-primary);
+        border-color: var(--color-primary);
+        color: white;
+    }
+
+
+/* =========================================================
+   10. STEP CONTENT
+   ========================================================= */
+
+.step-content {
+    display: none;
+}
+
+    .step-content.active {
+        display: block;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+@keyframes fadeIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================================
+   11. PASSWORD HELPER
+   ========================================================= */
+
+.password-helper {
+    color: var(--color-text-secondary);
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   12. EMAIL VERIFICATION MODAL
+   ========================================================= */
+
+.verify-modal {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.40);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 50;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+    .verify-modal.hidden {
+        display: none;
+    }
+
+    .verify-modal.show {
+        display: flex;
+    }
+
+.verify-modal-card {
+    background-color: white;
+    border-radius: 24px;
+    padding: 32px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    position: relative;
+}
+
+
+/* =========================================================
+   13. OTP INPUT
+   ========================================================= */
+
+.otp-input {
+    width: 48px;
+    height: 48px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+    outline: none;
+}
+
+    .otp-input:focus {
+        border-color: var(--color-primary);
+    }
+
+
+/* =========================================================
+   14. MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .gender-pill {
+        padding: 10px 20px;
+    }
+
+    .verify-modal-card {
+        padding: 24px;
+    }
+
+    .otp-input {
+        width: 42px;
+        height: 42px;
+    }
+}
