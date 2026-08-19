@@ -1,0 +1,109 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using SettleMate.Data.Student;
+using SettleMate.Models.Student;
+
+namespace SettleMate.Controllers.Student
+{
+    [Route("Student/Login")]
+    public class LoginController : Controller
+    {
+        private readonly LoginData loginData;
+
+        public LoginController(IConfiguration configuration)
+        {
+            loginData = new LoginData(configuration);
+        }
+
+
+        // ==========================================
+        // GET LOGIN
+        // ==========================================
+
+        [HttpGet("")]
+        public IActionResult Login()
+        {
+            try
+            {
+                // Already logged in
+                if (HttpContext.Session.GetInt32("UserID") != null)
+                {
+                    return Redirect("/Student/Home");
+                }
+
+                return View("~/Views/Student/Login.cshtml");
+            }
+            catch (Exception)
+            {
+                return View("~/Views/Shared/Error.cshtml");
+            }
+        }
+
+
+        // ==========================================
+        // POST LOGIN
+        // ==========================================
+
+        [HttpPost("")]
+        public IActionResult Login(LoginModel model)
+        {
+            try
+            {
+                // Already logged in
+                if (HttpContext.Session.GetInt32("UserID") != null)
+                {
+                    return Redirect("/Student/Home");
+                }
+
+
+                if (!ModelState.IsValid)
+                {
+                    return View(
+                        "~/Views/Student/Login.cshtml",
+                        model);
+                }
+
+
+                int userID =
+                    loginData.Login(model);
+
+
+                if (userID > 0)
+                {
+                    // Store user ID in session
+                    HttpContext.Session.SetInt32(
+                        "UserID",
+                        userID);
+
+                    // Store email in session
+                    HttpContext.Session.SetString(
+                        "UserEmail",
+                        model.Email);
+
+                    TempData["Success"] =
+                        "Login successful.";
+
+                    return Redirect("/Student/Home");
+                }
+
+
+                ModelState.AddModelError(
+                    "",
+                    "Invalid email or password.");
+
+                return View(
+                    "~/Views/Student/Login.cshtml",
+                    model);
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError(
+                    "",
+                    "Something went wrong. Please try again.");
+
+                return View(
+                    "~/Views/Student/Login.cshtml",
+                    model);
+            }
+        }
+    }
+}

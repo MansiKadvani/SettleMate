@@ -1,0 +1,345 @@
+﻿@model SettleMate.Models.Student.LoginModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>SettleMate - Login</title>
+
+
+    <!-- =====================================================
+         FONTS
+         ===================================================== -->
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Nunito:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+
+    <!-- =====================================================
+         TAILWIND
+         ===================================================== -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+    <!-- =====================================================
+         LUCIDE
+         ===================================================== -->
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+
+    <!-- =====================================================
+         GLOBAL CSS
+         ===================================================== -->
+
+    <link rel="stylesheet"
+          href="~/css/site.css">
+
+
+    <!-- =====================================================
+         LOGIN CSS
+         ===================================================== -->
+
+    <link rel="stylesheet"
+          href="~/css/student/login.css">
+
+</head>
+
+
+<body class="min-h-screen flex items-center justify-center">
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="mb-5 text-center text-green-600 text-sm font-semibold">
+
+            @TempData["Success"]
+
+        </div>
+    }
+
+    <!-- =====================================================
+         LOGIN CARD
+         ===================================================== -->
+
+    <div class="login-card">
+
+
+        <!-- =================================================
+             LOGO
+             ================================================= -->
+
+        <div class="text-center mb-8">
+
+            <img src="~/images/Student/logo.png"
+                 alt="SettleMate Logo"
+                 class="h-28 w-28 object-contain mx-auto">
+
+
+            <h2 class="text-xl font-bold text-[#102A43] mt-2">
+
+                Welcome Back
+
+            </h2>
+
+
+            <p class="text-sm text-[#526777] mt-2">
+
+                Login to continue to SettleMate
+
+            </p>
+
+        </div>
+
+
+        <!-- =================================================
+             ERROR MESSAGE
+             ================================================= -->
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="mb-5 text-sm text-red-500">
+
+                @Html.ValidationSummary(
+                false,
+                        "",
+                        new { @class = "text-red-500" })
+
+        </div>
+                }
+
+
+        <!-- =================================================
+             LOGIN FORM
+             ================================================= -->
+
+        <form method="post"
+              action="/Student/Login"
+              id="loginForm">
+
+
+            <!-- =================================================
+                 EMAIL
+                 ================================================= -->
+
+            <div class="mb-5">
+
+                <label class="registration-label">
+
+                    Email Address
+
+                </label>
+
+
+                <div class="relative">
+
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[#526777]">
+
+                        <i data-lucide="mail"
+                           class="w-4 h-4">
+                        </i>
+
+                    </span>
+
+
+                    <input type="email"
+                           name="Email"
+                           value="@Model?.Email"
+                           placeholder="john@example.com"
+                           class="registration-input pl-10"
+                           required>
+
+                </div>
+
+
+                <span asp-validation-for="Email"
+                      class="text-red-500 text-xs">
+                </span>
+
+            </div>
+
+
+            <!-- =================================================
+                 PASSWORD
+                 ================================================= -->
+
+            <div class="mb-3">
+
+                <label class="registration-label">
+
+                    Password
+
+                </label>
+
+
+                <div class="relative">
+
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[#526777]">
+
+                        <i data-lucide="lock"
+                           class="w-4 h-4">
+                        </i>
+
+                    </span>
+
+
+                    <input type="password"
+                           name="Password"
+                           id="password"
+                           placeholder="••••••••"
+                           class="registration-input px-10"
+                           required>
+
+
+                    <button type="button"
+                            onclick="togglePassword()"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 text-[#526777]">
+
+                        <i data-lucide="eye-off"
+                           id="passwordIcon"
+                           class="w-4 h-4">
+                        </i>
+
+                    </button>
+
+                </div>
+
+
+                <span asp-validation-for="Password"
+                      class="text-red-500 text-xs">
+                </span>
+
+            </div>
+
+
+            <!-- =================================================
+                 FORGOT PASSWORD
+                 ================================================= -->
+
+            <div class="text-right mb-7">
+
+                <a href="/Student/ForgotPassword"
+                   class="text-sm font-semibold text-[#0D9488] hover:underline">
+
+                    Forgot Password?
+
+                </a>
+
+            </div>
+
+
+            <!-- =================================================
+                 LOGIN BUTTON
+                 ================================================= -->
+
+            <button type="submit"
+                    class="w-full registration-primary-btn py-3 font-semibold">
+
+                Login
+
+            </button>
+
+
+        </form>
+
+
+        <!-- =================================================
+             CREATE ACCOUNT
+             ================================================= -->
+
+        <div class="text-center mt-7">
+
+            <p class="text-sm text-[#526777]">
+
+                Don't have an account?
+
+                <a href="/Student/Register"
+                   class="font-semibold text-[#0D9488] hover:underline">
+
+                    Create Account
+
+                </a>
+
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+
+    <script>
+
+        lucide.createIcons();
+
+
+        // ==========================================
+        // SHOW / HIDE PASSWORD
+        // ==========================================
+
+        function togglePassword()
+        {
+            const password =
+                document.getElementById("password");
+
+            const icon =
+                document.getElementById("passwordIcon");
+
+
+            if (password.type === "password")
+            {
+                password.type = "text";
+
+                icon.setAttribute(
+                    "data-lucide",
+                    "eye"
+                );
+            }
+            else
+            {
+                password.type = "password";
+
+                icon.setAttribute(
+                    "data-lucide",
+                    "eye-off"
+                );
+            }
+
+
+            lucide.createIcons();
+        }
+
+
+        // ==========================================
+        // FORGOT PASSWORD
+        // UI ONLY
+        // ==========================================
+
+       
+
+    </script>
+
+
+</body>
+
+</html>

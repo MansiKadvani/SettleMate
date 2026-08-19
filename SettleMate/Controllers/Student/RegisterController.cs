@@ -245,10 +245,11 @@ namespace SettleMate.Controllers.Student
 
 
                     TempData["Success"] =
-                        "Registration successful!";
+        "Registration successful. Please login.";
 
-                    return Redirect(
-                        "/Student/Register");
+                    return RedirectToAction(
+                        "Login",
+                        "Login");
                 }
 
 

@@ -1,0 +1,52 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>SettleMate - Home</title>
+
+</head>
+
+<body>
+
+    <div style="text-align:center; margin-top:100px;">
+
+        @if (TempData["Success"] != null)
+        {
+            <h2>
+                @TempData["Success"]
+            </h2>
+        }
+
+        <h1>
+            Welcome to SettleMate
+        </h1>
+
+
+        <!-- ==========================================
+             LOGOUT BUTTON
+             ========================================== -->
+
+        <a href="/Student/Home/Logout">
+
+            <button type="button">
+                Logout
+            </button>
+
+        </a>
+
+    </div>
+
+</body>
+
+</html>
