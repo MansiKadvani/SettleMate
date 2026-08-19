@@ -9,22 +9,19 @@ namespace SettleMate.Controllers.Student
     {
         private readonly LoginData loginData;
 
+        // Create LoginData object
         public LoginController(IConfiguration configuration)
         {
             loginData = new LoginData(configuration);
         }
 
-
-        // ==========================================
-        // GET LOGIN
-        // ==========================================
-
+        // Open login page
         [HttpGet("")]
         public IActionResult Login()
         {
             try
             {
-                // Already logged in
+                // Check if user is already logged in
                 if (HttpContext.Session.GetInt32("UserID") != null)
                 {
                     return Redirect("/Student/Home");
@@ -38,23 +35,19 @@ namespace SettleMate.Controllers.Student
             }
         }
 
-
-        // ==========================================
-        // POST LOGIN
-        // ==========================================
-
+        // Check login details
         [HttpPost("")]
         public IActionResult Login(LoginModel model)
         {
             try
             {
-                // Already logged in
+                // Check if user is already logged in
                 if (HttpContext.Session.GetInt32("UserID") != null)
                 {
                     return Redirect("/Student/Home");
                 }
 
-
+                // Check model validation
                 if (!ModelState.IsValid)
                 {
                     return View(
@@ -62,11 +55,10 @@ namespace SettleMate.Controllers.Student
                         model);
                 }
 
+                // Check email and password in database
+                int userID = loginData.Login(model);
 
-                int userID =
-                    loginData.Login(model);
-
-
+                // Login successful
                 if (userID > 0)
                 {
                     // Store user ID in session
@@ -85,7 +77,7 @@ namespace SettleMate.Controllers.Student
                     return Redirect("/Student/Home");
                 }
 
-
+                // Login failed
                 ModelState.AddModelError(
                     "",
                     "Invalid email or password.");

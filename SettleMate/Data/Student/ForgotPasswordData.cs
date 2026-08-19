@@ -10,47 +10,41 @@ namespace SettleMate.Data.Student
         private readonly string connectionString;
         private readonly IConfiguration configuration;
 
-
-        public ForgotPasswordData(IConfiguration configuration)
+        // Get connection string and email settings
+        public ForgotPasswordData(
+            IConfiguration configuration)
         {
             this.configuration = configuration;
 
             connectionString =
-                configuration.GetConnectionString("DefaultConnection");
+                configuration.GetConnectionString(
+                    "DefaultConnection");
         }
 
-
-        // =====================================================
-        // CHECK EMAIL
-        // =====================================================
-
+        // Check if email is registered
         public bool EmailExists(string email)
         {
             try
             {
+                // Create database connection
                 using SqlConnection connection =
                     new SqlConnection(connectionString);
 
+                // Check email in Users table
                 string query =
                     "SELECT COUNT(*) FROM Users WHERE Email = @Email";
 
-
                 using SqlCommand command =
                     new SqlCommand(query, connection);
-
 
                 command.Parameters.AddWithValue(
                     "@Email",
                     email);
 
-
                 connection.Open();
 
-
-                int count =
-                    Convert.ToInt32(
-                        command.ExecuteScalar());
-
+                int count = Convert.ToInt32(
+                    command.ExecuteScalar());
 
                 return count > 0;
             }
@@ -60,15 +54,12 @@ namespace SettleMate.Data.Student
             }
         }
 
-
-        // =====================================================
-        // SEND OTP
-        // =====================================================
-
+        // Send OTP to user email
         public bool SendOTP(string email, string otp)
         {
             try
             {
+                // Get email settings from appsettings.json
                 string senderEmail =
                     configuration["EmailSettings:Email"];
 
@@ -78,25 +69,20 @@ namespace SettleMate.Data.Student
                 string smtpServer =
                     configuration["EmailSettings:SmtpServer"];
 
-                int port =
-                    Convert.ToInt32(
-                        configuration["EmailSettings:Port"]);
+                int port = Convert.ToInt32(
+                    configuration["EmailSettings:Port"]);
 
-
-                MailMessage message =
+                // Create email message
+                using MailMessage message =
                     new MailMessage();
-
 
                 message.From =
                     new MailAddress(senderEmail);
 
-
                 message.To.Add(email);
-
 
                 message.Subject =
                     "SettleMate Password Reset OTP";
-
 
                 message.Body =
                     "Hello,\n\n" +
@@ -107,25 +93,19 @@ namespace SettleMate.Data.Student
                     "Thank you,\n" +
                     "SettleMate";
 
-
-                SmtpClient smtp =
-                    new SmtpClient(smtpServer);
-
-
-                smtp.Port = port;
-
+                // Create SMTP client
+                using SmtpClient smtp =
+                    new SmtpClient(smtpServer, port);
 
                 smtp.Credentials =
                     new NetworkCredential(
                         senderEmail,
                         senderPassword);
 
-
                 smtp.EnableSsl = true;
 
-
+                // Send email
                 smtp.Send(message);
-
 
                 return true;
             }
@@ -135,47 +115,42 @@ namespace SettleMate.Data.Student
             }
         }
 
-
-        // =====================================================
-        // CHANGE PASSWORD
-        // =====================================================
-
+        // Change password in database
         public bool ChangePassword(
             string email,
             string newPassword)
         {
             try
             {
+                // Create database connection
                 using SqlConnection connection =
                     new SqlConnection(connectionString);
 
-
+                // Update password for registered email
                 string query = @"
                     UPDATE Users
                     SET Password = @Password
                     WHERE Email = @Email";
 
-
                 using SqlCommand command =
                     new SqlCommand(query, connection);
 
-
+                // Hash new password before saving
                 command.Parameters.AddWithValue(
                     "@Password",
-                    PasswordHelper.HashPassword(newPassword));
+                    PasswordHelper.HashPassword(
+                        newPassword));
 
-
+                // Add email parameter
                 command.Parameters.AddWithValue(
                     "@Email",
                     email);
 
-
                 connection.Open();
 
-
+                // Run update query
                 int result =
                     command.ExecuteNonQuery();
-
 
                 return result > 0;
             }

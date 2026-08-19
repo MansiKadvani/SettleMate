@@ -4,8 +4,9 @@ namespace SettleMate.Models.Student
 {
     public class ForgotPasswordOTPModel
     {
+        // Store OTP entered by user
         [Required(ErrorMessage = "OTP is required")]
-        [StringLength(6, MinimumLength = 6,
+        [RegularExpression(@"^\d{6}$",
             ErrorMessage = "OTP must contain 6 digits")]
         public string OTP { get; set; }
     }

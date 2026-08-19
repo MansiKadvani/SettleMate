@@ -10,18 +10,13 @@ namespace SettleMate.Controllers.Student
     {
         private readonly RegisterData registerData;
 
-
+        // Create RegisterData object
         public RegisterController(IConfiguration configuration)
         {
-            registerData =
-                new RegisterData(configuration);
+            registerData = new RegisterData(configuration);
         }
 
-
-        // =====================================================
-        // GET REGISTER
-        // =====================================================
-
+        // Open registration page
         [HttpGet("")]
         public IActionResult Register()
         {
@@ -35,18 +30,13 @@ namespace SettleMate.Controllers.Student
             }
         }
 
-
-        // =====================================================
-        // SEND OTP
-        // =====================================================
-
+        // Validate registration form and send OTP
         [HttpPost("SendOTP")]
         public IActionResult SendOTP(RegisterModel model)
         {
             try
             {
-                // Backend validation
-
+                // Check model validation
                 if (!ModelState.IsValid)
                 {
                     return View(
@@ -54,9 +44,7 @@ namespace SettleMate.Controllers.Student
                         model);
                 }
 
-
-                // Check email
-
+                // Check if email is already registered
                 if (registerData.EmailExists(model.Email))
                 {
                     ModelState.AddModelError(
@@ -68,61 +56,46 @@ namespace SettleMate.Controllers.Student
                         model);
                 }
 
-
                 // Generate 6 digit OTP
-
-                Random random = new Random();
-
-                string otp =
-                    random.Next(100000, 999999)
+                string otp = Random.Shared
+                    .Next(100000, 1000000)
                     .ToString();
 
-
-                // Store registration data
-
+                // Store registration form data temporarily
                 HttpContext.Session.SetString(
                     "PendingRegistration",
                     JsonSerializer.Serialize(model));
 
-
-                // Store OTP
-
+                // Store OTP temporarily
                 HttpContext.Session.SetString(
                     "RegisterOTP",
                     otp);
 
-
-                // OTP expires after 2 minutes
-
+                // Store OTP expiry time for 2 minutes
                 HttpContext.Session.SetString(
                     "OTPExpiry",
                     DateTime.Now
                         .AddMinutes(2)
-                        .ToString());
+                        .ToString("O"));
 
-
-                // Send OTP
-
+                // Send OTP to registered email
                 registerData.SendOTP(
                     model.Email,
                     otp);
 
-
+                // Open OTP modal
                 ViewBag.ShowOTP = true;
-
-                ViewBag.OTPEmail =
-                    model.Email;
-
+                ViewBag.OTPEmail = model.Email;
 
                 return View(
                     "~/Views/Student/Register.cshtml",
                     model);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 ModelState.AddModelError(
                     "",
-                    "Error: " + ex.Message);
+                    "Could not send OTP. Please try again.");
 
                 return View(
                     "~/Views/Student/Register.cshtml",
@@ -130,31 +103,25 @@ namespace SettleMate.Controllers.Student
             }
         }
 
-
-        // =====================================================
-        // VERIFY OTP
-        // =====================================================
-
+        // Verify OTP and complete registration
         [HttpPost("VerifyOTP")]
         public IActionResult VerifyOTP(string otp)
         {
             try
             {
-                string savedOTP =
-                    HttpContext.Session.GetString(
-                        "RegisterOTP");
+                // Get saved OTP from session
+                string savedOTP = HttpContext.Session.GetString(
+                    "RegisterOTP");
 
+                // Get saved expiry time from session
+                string expiryText = HttpContext.Session.GetString(
+                    "OTPExpiry");
 
-                string expiryText =
-                    HttpContext.Session.GetString(
-                        "OTPExpiry");
+                // Get saved registration data from session
+                string registrationText = HttpContext.Session.GetString(
+                    "PendingRegistration");
 
-
-                string registrationText =
-                    HttpContext.Session.GetString(
-                        "PendingRegistration");
-
-
+                // Check if session data exists
                 if (savedOTP == null ||
                     expiryText == null ||
                     registrationText == null)
@@ -165,184 +132,177 @@ namespace SettleMate.Controllers.Student
                     return Redirect("/Student/Register");
                 }
 
+                // Convert expiry text into DateTime
+                DateTime expiry = DateTime.Parse(expiryText);
 
-                // Check expiry
+                // Convert saved registration text into model
+                RegisterModel registerModel =
+                    JsonSerializer.Deserialize<RegisterModel>(
+                        registrationText);
 
-                DateTime expiry =
-                    DateTime.Parse(expiryText);
-
-
+                // Check if OTP has expired
                 if (DateTime.Now > expiry)
                 {
                     ModelState.AddModelError(
                         "",
-                        "OTP has expired.");
-
-                    RegisterModel model =
-                        JsonSerializer.Deserialize<RegisterModel>(
-                            registrationText);
+                        "OTP has expired. Please resend OTP.");
 
                     ViewBag.ShowOTP = true;
-
-                    ViewBag.OTPEmail =
-                        model.Email;
+                    ViewBag.OTPEmail = registerModel.Email;
 
                     return View(
                         "~/Views/Student/Register.cshtml",
-                        model);
+                        registerModel);
                 }
 
+                // Check if OTP is empty or not 6 digits
+                if (string.IsNullOrWhiteSpace(otp) ||
+                    otp.Length != 6 ||
+                    !otp.All(char.IsDigit))
+                {
+                    ModelState.AddModelError(
+                        "",
+                        "Please enter a valid 6 digit OTP.");
 
-                // Check OTP
+                    ViewBag.ShowOTP = true;
+                    ViewBag.OTPEmail = registerModel.Email;
 
+                    return View(
+                        "~/Views/Student/Register.cshtml",
+                        registerModel);
+                }
+
+                // Check if entered OTP is correct
                 if (otp != savedOTP)
                 {
                     ModelState.AddModelError(
                         "",
                         "Invalid OTP.");
 
-                    RegisterModel model =
-                        JsonSerializer.Deserialize<RegisterModel>(
-                            registrationText);
-
                     ViewBag.ShowOTP = true;
-
-                    ViewBag.OTPEmail =
-                        model.Email;
+                    ViewBag.OTPEmail = registerModel.Email;
 
                     return View(
                         "~/Views/Student/Register.cshtml",
-                        model);
+                        registerModel);
                 }
 
+                // Check email again before database insert
+                if (registerData.EmailExists(registerModel.Email))
+                {
+                    HttpContext.Session.Remove("RegisterOTP");
+                    HttpContext.Session.Remove("OTPExpiry");
+                    HttpContext.Session.Remove("PendingRegistration");
 
-                // Get registration data
+                    TempData["Error"] =
+                        "Email already exists. Please register again.";
 
-                RegisterModel registerModel =
-                    JsonSerializer.Deserialize<RegisterModel>(
-                        registrationText);
+                    return Redirect("/Student/Register");
+                }
 
+                // Insert verified user into database
+                bool result = registerData.Register(
+                    registerModel);
 
-                // Finally insert into database
-
-                bool result =
-                    registerData.Register(
-                        registerModel);
-
-
+                // Check if registration is successful
                 if (result)
                 {
-                    // Clear session
-
-                    HttpContext.Session.Remove(
-                        "RegisterOTP");
-
-                    HttpContext.Session.Remove(
-                        "OTPExpiry");
-
-                    HttpContext.Session.Remove(
-                        "PendingRegistration");
-
+                    // Clear temporary session data
+                    HttpContext.Session.Remove("RegisterOTP");
+                    HttpContext.Session.Remove("OTPExpiry");
+                    HttpContext.Session.Remove("PendingRegistration");
 
                     TempData["Success"] =
-        "Registration successful. Please login.";
+                        "Registration successful. Please login.";
 
                     return RedirectToAction(
                         "Login",
                         "Login");
                 }
 
-
                 ModelState.AddModelError(
                     "",
-                    "Registration failed.");
+                    "Registration failed. Please try again.");
+
+                ViewBag.ShowOTP = true;
+                ViewBag.OTPEmail = registerModel.Email;
 
                 return View(
                     "~/Views/Student/Register.cshtml",
                     registerModel);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 ModelState.AddModelError(
                     "",
-                    "Error: " + ex.Message);
+                    "Something went wrong. Please try again.");
 
                 return View(
                     "~/Views/Student/Register.cshtml");
             }
         }
 
-
-        // =====================================================
-        // RESEND OTP
-        // =====================================================
-
+        // Generate new OTP and send it again
         [HttpPost("ResendOTP")]
         public IActionResult ResendOTP()
         {
             try
             {
-                string registrationText =
-                    HttpContext.Session.GetString(
-                        "PendingRegistration");
+                // Get saved registration data
+                string registrationText = HttpContext.Session.GetString(
+                    "PendingRegistration");
 
-
+                // Check if registration session exists
                 if (registrationText == null)
                 {
-                    return Redirect(
-                        "/Student/Register");
+                    TempData["Error"] =
+                        "Session expired. Please register again.";
+
+                    return Redirect("/Student/Register");
                 }
 
-
+                // Convert session text into model
                 RegisterModel model =
                     JsonSerializer.Deserialize<RegisterModel>(
                         registrationText);
 
-
-                Random random =
-                    new Random();
-
-
-                string otp =
-                    random.Next(100000, 999999)
+                // Generate new 6 digit OTP
+                string otp = Random.Shared
+                    .Next(100000, 1000000)
                     .ToString();
 
-
+                // Replace old OTP with new OTP
                 HttpContext.Session.SetString(
                     "RegisterOTP",
                     otp);
 
-
+                // Reset OTP expiry to 2 minutes
                 HttpContext.Session.SetString(
                     "OTPExpiry",
                     DateTime.Now
                         .AddMinutes(2)
-                        .ToString());
+                        .ToString("O"));
 
-
+                // Send new OTP email
                 registerData.SendOTP(
                     model.Email,
                     otp);
 
-
+                // Keep OTP modal open
                 ViewBag.ShowOTP = true;
-
-                ViewBag.OTPEmail =
-                    model.Email;
-
+                ViewBag.OTPEmail = model.Email;
                 ViewBag.ResendMessage =
                     "New OTP sent successfully.";
-
 
                 return View(
                     "~/Views/Student/Register.cshtml",
                     model);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 ModelState.AddModelError(
                     "",
-                    "Error: " + ex.Message);
+                    "Could not resend OTP. Please try again.");
 
                 return View(
                     "~/Views/Student/Register.cshtml");

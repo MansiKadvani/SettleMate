@@ -10,18 +10,22 @@ namespace SettleMate.Data.Student
         private readonly string connectionString;
         private readonly IConfiguration configuration;
 
+        // Get connection string and email settings
         public RegisterData(IConfiguration configuration)
         {
             this.configuration = configuration;
 
             connectionString =
-                configuration.GetConnectionString("DefaultConnection");
+                configuration.GetConnectionString(
+                    "DefaultConnection");
         }
 
+        // Send OTP to user email
         public bool SendOTP(string email, string otp)
         {
             try
             {
+                // Get email settings from appsettings.json
                 string senderEmail =
                     configuration["EmailSettings:Email"];
 
@@ -31,12 +35,11 @@ namespace SettleMate.Data.Student
                 string smtpServer =
                     configuration["EmailSettings:SmtpServer"];
 
-                int port =
-                    Convert.ToInt32(
-                        configuration["EmailSettings:Port"]);
+                int port = Convert.ToInt32(
+                    configuration["EmailSettings:Port"]);
 
-
-                MailMessage message =
+                // Create email message
+                using MailMessage message =
                     new MailMessage();
 
                 message.From =
@@ -47,7 +50,6 @@ namespace SettleMate.Data.Student
                 message.Subject =
                     "SettleMate Email Verification";
 
-
                 message.Body =
                     "Hello,\n\n" +
                     "Your SettleMate verification OTP is: " +
@@ -57,11 +59,9 @@ namespace SettleMate.Data.Student
                     "Thank you,\n" +
                     "SettleMate";
 
-
-                SmtpClient smtp =
-                    new SmtpClient(smtpServer);
-
-                smtp.Port = port;
+                // Create SMTP client
+                using SmtpClient smtp =
+                    new SmtpClient(smtpServer, port);
 
                 smtp.Credentials =
                     new NetworkCredential(
@@ -70,6 +70,7 @@ namespace SettleMate.Data.Student
 
                 smtp.EnableSsl = true;
 
+                // Send email
                 smtp.Send(message);
 
                 return true;
@@ -80,30 +81,30 @@ namespace SettleMate.Data.Student
             }
         }
 
-
-        // =====================================================
-        // CHECK EMAIL
-        // =====================================================
-
+        // Check if email already exists
         public bool EmailExists(string email)
         {
             try
             {
+                // Create database connection
                 using SqlConnection connection =
                     new SqlConnection(connectionString);
 
+                // Check email in Users table
                 string query =
                     "SELECT COUNT(*) FROM Users WHERE Email = @Email";
 
                 using SqlCommand command =
                     new SqlCommand(query, connection);
 
-                command.Parameters.AddWithValue("@Email", email);
+                command.Parameters.AddWithValue(
+                    "@Email",
+                    email);
 
                 connection.Open();
 
-                int count =
-                    Convert.ToInt32(command.ExecuteScalar());
+                int count = Convert.ToInt32(
+                    command.ExecuteScalar());
 
                 return count > 0;
             }
@@ -113,19 +114,16 @@ namespace SettleMate.Data.Student
             }
         }
 
-
-        // =====================================================
-        // REGISTER STUDENT
-        // =====================================================
-
+        // Insert verified student into database
         public bool Register(RegisterModel model)
         {
             try
             {
+                // Create database connection
                 using SqlConnection connection =
                     new SqlConnection(connectionString);
 
-
+                // Insert student details into Users table
                 string query = @"
                     INSERT INTO Users
                     (
@@ -156,72 +154,70 @@ namespace SettleMate.Data.Student
                         @CreatedDate
                     )";
 
-
                 using SqlCommand command =
                     new SqlCommand(query, connection);
 
-
+                // Add full name
                 command.Parameters.AddWithValue(
                     "@FullName",
                     model.Name);
 
-
+                // Add email
                 command.Parameters.AddWithValue(
                     "@Email",
                     model.Email);
 
-
+                // Add mobile number
                 command.Parameters.AddWithValue(
                     "@MobileNumber",
                     model.Phone);
 
-
+                // Add gender
                 command.Parameters.AddWithValue(
                     "@Gender",
                     model.Gender);
 
-
+                // Add city
                 command.Parameters.AddWithValue(
                     "@City",
                     model.City);
 
-
+                // Add address
                 command.Parameters.AddWithValue(
                     "@Address",
                     model.Address);
 
-
+                // Add profile photo if available
                 command.Parameters.AddWithValue(
                     "@ProfileAvatar",
                     (object?)model.ProfilePhoto ?? DBNull.Value);
 
-
+                // Hash password before saving
                 command.Parameters.AddWithValue(
                     "@Password",
-                    PasswordHelper.HashPassword(model.Password));
+                    PasswordHelper.HashPassword(
+                        model.Password));
 
-
+                // Set user role
                 command.Parameters.AddWithValue(
                     "@Role",
                     "Student");
 
-
+                // Activate account
                 command.Parameters.AddWithValue(
                     "@IsActive",
                     true);
 
-
+                // Save registration date
                 command.Parameters.AddWithValue(
                     "@CreatedDate",
                     DateTime.Now);
 
-
                 connection.Open();
 
-
+                // Run insert query
                 int result =
                     command.ExecuteNonQuery();
-
 
                 return result > 0;
             }

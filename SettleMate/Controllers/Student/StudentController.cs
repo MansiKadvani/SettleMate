@@ -4,9 +4,17 @@ namespace SettleMate.Controllers.Student
 {
     public class StudentController : Controller
     {
+        [HttpGet("Register")]
         public IActionResult Register()
         {
-            return View();
+            try
+            {
+                return View("~/Views/Student/Home.cshtml");
+            }
+            catch (Exception)
+            {
+                return View("~/Views/Shared/Error.cshtml");
+            }
         }
     }
 }

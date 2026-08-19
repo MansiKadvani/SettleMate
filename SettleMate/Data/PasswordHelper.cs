@@ -5,17 +5,25 @@ namespace SettleMate.Data
 {
     public class PasswordHelper
     {
+        // Convert password into hashed text
         public static string HashPassword(string password)
         {
             try
             {
-                using SHA256 sha256 = SHA256.Create();
+                // Create SHA256 object
+                using SHA256 sha256 =
+                    SHA256.Create();
 
-                byte[] bytes = Encoding.UTF8.GetBytes(password);
+                // Convert password into bytes
+                byte[] passwordBytes =
+                    Encoding.UTF8.GetBytes(password);
 
-                byte[] hash = sha256.ComputeHash(bytes);
+                // Create hashed password bytes
+                byte[] hashBytes =
+                    sha256.ComputeHash(passwordBytes);
 
-                return Convert.ToBase64String(hash);
+                // Convert hash bytes into text
+                return Convert.ToBase64String(hashBytes);
             }
             catch (Exception)
             {
